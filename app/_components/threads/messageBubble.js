@@ -29,7 +29,7 @@ export default function MessageBubble({
     if (isLatestMessage) {
       document
         .getElementById(message.id)
-        .scrollIntoView({ behavior: 'smooth' });
+        .scrollIntoView({ behavior: 'smooth', block: 'end' });
       setLoading(false);
     }
   }, [message, isLatestMessage, setLoading]);

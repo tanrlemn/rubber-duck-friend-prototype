@@ -2,9 +2,11 @@
 
 // context
 import { LoadingContext } from '@/app/lib/providers/LoadingProvider';
+import { SessionContext } from '@/app/lib/providers/SessionProvider';
 
 // hooks
 import { useState, useEffect, useContext } from 'react';
+import { useRouter } from 'next/navigation';
 
 // chakra-ui
 import { Button } from '@chakra-ui/react';
@@ -16,6 +18,9 @@ import Loading from './loading';
 
 export default function Home() {
   const { loading, setLoading } = useContext(LoadingContext);
+  const { session } = useContext(SessionContext);
+
+  const router = useRouter();
 
   const [threadId, setThreadId] = useState(null);
   const [runId, setRunId] = useState(null);
@@ -24,6 +29,10 @@ export default function Home() {
   const [messages, setMessages] = useState(null);
 
   useEffect(() => {
+    if (session === null) {
+      router.push('/auth');
+    }
+
     const getMessages = async () => {
       setLoading(true);
       const res = await fetch('/api/openai/getThreadMessages', {
@@ -84,7 +93,16 @@ export default function Home() {
         setRunStatus(null);
       }
     }
-  }, [runStatus, refreshStatus, threadId, runId, messages, setLoading]);
+  }, [
+    runStatus,
+    refreshStatus,
+    threadId,
+    runId,
+    messages,
+    setLoading,
+    session,
+    router,
+  ]);
 
   const handleNewThread = async () => {
     const res = await fetch('/api/openai/createThread', {

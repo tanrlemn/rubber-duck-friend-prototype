@@ -4,11 +4,15 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 const inter = Inter({ subsets: ['latin'] });
 
+// server
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+
 // providers
 import { ThemeProvider } from './lib/providers/ThemeProvider';
 import { LoadingProvider } from './lib/providers/LoadingProvider';
 import { ScaleProvider } from './lib/providers/ScaleProvider';
-// import { SessionProvider } from './lib/providers/SessionProvider';
+import { SessionProvider } from './lib/providers/SessionProvider';
 
 // local components
 import Navbar from './_navigation/navbar';
@@ -20,14 +24,33 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
+  const cookieStore = cookies();
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        get(name) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
   return (
     <html lang='en'>
       <body className={inter.className}>
         <LoadingProvider>
           <ScaleProvider>
             <ThemeProvider>
-              <Navbar />
-              {children}
+              <SessionProvider session={session}>
+                <Navbar />
+                {children}
+              </SessionProvider>
             </ThemeProvider>
           </ScaleProvider>
         </LoadingProvider>
