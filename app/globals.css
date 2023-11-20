@@ -1,0 +1,190 @@
+:root {
+  /* Grays */
+  --white30: #ffffff4f;
+  --white: #fff;
+  --lighterGray: #f1f0ee;
+  --lightGray: #b2adbe;
+  --gray: #6a747e;
+  --darkGray: #272a2d;
+  --midGray: #373c41;
+  --midGrayAlt: #4f5963;
+  --black: #010510;
+  --blackAlt: #161616;
+
+  /* Greens */
+  --lightGreen: #b6e8be;
+  --lightGreen50: #b0eab980;
+  --lightGreenGray: #80bec0;
+  --midGreen: #71dc81;
+  --midGreenGray: #60b56d;
+  --green: #00d020;
+  --greenGray: #47888a;
+  --darkerGreen: #1a393a;
+  --darkGreen: #204f58;
+
+  --chartreuse: #b4ff28;
+
+  --teal: #00ffb6;
+
+  /* Blues */
+  --lightestBlue: #eaf0f5;
+  --lighterBlue: #cbd2d9;
+  --lightBlue: #afd8f2;
+  --midLightBlue: #7fc4f2;
+  --blue: #0098ff;
+  --blueAlt: #0085d8;
+  --darkBlue: #0081d9;
+  --darkBlue50: #0082d984;
+  --darkerBlue: #003456;
+  --darkestBlue: #071a35;
+  --darkestBlueAlt: #14253c;
+  --darkestBlue90: #071a35d3;
+
+  /* Purples */
+  --lightPurpleGray: #e0c8ea;
+  --midPurpleGray: #c5a9d1;
+  --purple: #9747ff;
+  --midPurple: #6f00ff;
+  --purpleAlt: #bd5ae7;
+  --purpleGrayAlt: #b38ac4;
+  --purpleGray: #73577f;
+  --darkPurpleGray: #584361;
+  --darkPurpleGrayAlt: #432e4c;
+  --darkerPurpleGray: #221428;
+  --darkerPurpleGrayAlt: #2d2033;
+  --darkestPurple: #210735;
+  --darkestPurple90: #210735ca;
+
+  /* Pinks */
+  --lightPink: #f2ceec;
+  --pink: #ff00f5;
+
+  /* Reds */
+  --red: #ff4b00;
+  --redAlt: #f94c4c;
+
+  /* Yellows */
+  --yellow: #ffed28;
+  --boldYellow: #fec501;
+
+  /* Oranges */
+  --lightestOrange90: #f4efecd7;
+  --lightestOrange: #d9d0cb;
+  --lightOrange: #f8ad4f;
+  --midOrange: #f5b463;
+  --orange: #ff7300;
+  --orangeAlt: #ff8528;
+  --darkOrange: #c25e0c;
+  --darkerOrange: #9e3a18;
+
+  /* Borders */
+  --mainBorderRadius: 0.5625rem 0.5625rem 0.5625rem 0rem;
+  --topLeftBorderRadius: 0rem 0.5625rem 0.5625rem 0.5625rem;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  color: var(--white);
+  background: var(--darkerPurpleGray);
+  min-height: 100vh;
+  color-scheme: dark;
+}
+
+body {
+  background: transparent !important;
+}
+
+.loading {
+  animation: loading 3s ease-in-out infinite;
+}
+
+.animateUnderscore {
+  animation: animateUnderscore 3s ease-in-out infinite;
+}
+
+.animateText {
+  animation: animateText 3s ease-in-out infinite;
+}
+
+::-webkit-scrollbar {
+  width: 0.5rem;
+  background: var(--darkestPurple90);
+  backdrop-filter: blur(10px) saturate(100%);
+}
+
+::-webkit-scrollbar-track-piece {
+  width: 0.5rem;
+  background: transparent;
+  backdrop-filter: blur(10px) saturate(100%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--white30);
+  border-radius: 0.25rem;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 0.25rem;
+  outline: 1px solid var(--darkestPurple90);
+}
+
+@keyframes loading {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.95);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes animateUnderscore {
+  0% {
+    width: 0;
+  }
+
+  50% {
+    width: 100%;
+  }
+
+  100% {
+    width: 0;
+  }
+}
+
+@keyframes animateText {
+  0% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-1px);
+  }
+
+  30% {
+    transform: translateX(1px);
+  }
+
+  60% {
+    transform: translateX(-2px);
+  }
+
+  80% {
+    transform: translateX(2px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
