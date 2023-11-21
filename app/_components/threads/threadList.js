@@ -12,14 +12,16 @@ import { Heading, Link, List, ListItem, Text } from '@chakra-ui/react';
 // local components
 import LoadingDiv from '../utils/loadingDiv';
 
-export default function ThreadList() {
-  const { loadingInPlace, setLoadingInPlace } = useContext(LoadingContext);
+export default function ThreadList({ isDesktop = false }) {
+  const { loadingInPlace, setLoadingInPlace, setLoading } =
+    useContext(LoadingContext);
 
   const [threads, setThreads] = useState(null);
   const [updatedThreads, setUpdatedThreads] = useState(null);
 
   useEffect(() => {
     const getThreads = async () => {
+      setLoading(false);
       setLoadingInPlace(true);
 
       const res = await fetch('/api/supabase/getThreads', {
@@ -83,7 +85,9 @@ export default function ThreadList() {
           const lastMessage = await getLastMessage(thread.thread_id);
 
           let lastMessageText = await lastMessage?.content[0].text.value;
-          lastMessageText = `${lastMessageText?.substring(0, 30)}...`;
+          lastMessageText = isDesktop
+            ? `${lastMessageText?.substring(0, 50)}...`
+            : `${lastMessageText?.substring(0, 30)}...`;
 
           let messageDate = new Date(thread.updated_at);
           messageDate.setHours(0, 0, 0, 0);
@@ -164,10 +168,17 @@ export default function ThreadList() {
     if (threads !== null && updatedThreads === null) {
       updateThreads();
     }
-  }, [threads, setLoadingInPlace, loadingInPlace, updatedThreads]);
+  }, [
+    threads,
+    setLoadingInPlace,
+    loadingInPlace,
+    updatedThreads,
+    setLoading,
+    isDesktop,
+  ]);
 
   return (
-    <List pb={'2rem'}>
+    <List pb={{ base: '2rem', md: 0 }}>
       {loadingInPlace && <LoadingDiv />}
       {threads !== null &&
         updatedThreads !== null &&
@@ -176,7 +187,7 @@ export default function ThreadList() {
             <ListItem
               key={group.date}
               mb={'1.5rem'}
-              borderBottom={'1px solid var(--darkPurpleGray)'}
+              borderBottom={'1px solid var(--darkPurpleGrayAlt, #B397BF)'}
               pb={'1rem'}
               minW={'100%'}>
               <Heading

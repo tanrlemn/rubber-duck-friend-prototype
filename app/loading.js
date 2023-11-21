@@ -12,8 +12,8 @@ import { Box, Flex } from '@chakra-ui/react';
 // local components
 import Logo from './_components/brandElements/logo';
 
-export default function Loading({ routeStyle }) {
-  const { loading } = useContext(LoadingContext);
+export default function Loading() {
+  const { loading, setLoading } = useContext(LoadingContext);
 
   const [extraLoading, setExtraLoading] = useState(true);
 
@@ -24,7 +24,12 @@ export default function Loading({ routeStyle }) {
       setTimeout(() => {
         setExtraLoading(false);
       }, timeout);
-  }, [loading]);
+
+    loading &&
+      setTimeout(() => {
+        setLoading(false);
+      }, 5000);
+  }, [loading, setLoading]);
 
   return (
     <>

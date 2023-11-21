@@ -43,5 +43,5 @@ export async function POST(req) {
     return NextResponse.json({ threads, error });
   }
 
-  return false;
+  return NextResponse.redirect('/auth');
 }

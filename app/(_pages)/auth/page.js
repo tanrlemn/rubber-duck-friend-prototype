@@ -16,7 +16,7 @@ import { useContext, useEffect } from 'react';
 import { Box, Button, Heading, Input } from '@chakra-ui/react';
 
 export default function AuthUI() {
-  const { loading, setLoading } = useContext(LoadingContext);
+  const { setLoading } = useContext(LoadingContext);
   const { session } = useContext(SessionContext);
 
   const supabase = createBrowserClient(
@@ -30,7 +30,9 @@ export default function AuthUI() {
 
   return (
     <>
-      <Box p={'1.5rem'}>
+      <Box
+        p={'1.5rem'}
+        pl={{ base: null, md: '5rem' }}>
         <Heading
           mb={'1rem'}
           mt={'2rem'}>

@@ -28,12 +28,13 @@ export default function MessageInput({ threadId = null, isNewThread = false }) {
 
   const router = useRouter();
 
-  const { runStatus, handleNewThread, addThreadMessage } = useOpenaiThreads(
+  const { runStatus, handleNewThread, handleAddMessage } = useOpenaiThreads(
     threadId,
     isNewThread
   );
 
   const { loading, setLoading } = useContext(LoadingContext);
+
   const [newMessage, setNewMessage] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const onFocus = () => setIsFocused(true);
@@ -43,9 +44,10 @@ export default function MessageInput({ threadId = null, isNewThread = false }) {
 
   useEffect(() => {
     if (runStatus === 'completed') {
-      setLoading(false);
       setNewMessage('');
     }
+
+    setLoading(false);
   }, [runStatus, setLoading, threadId, isNewThread, router]);
 
   const handleTextareaFocus = () => {
@@ -60,7 +62,7 @@ export default function MessageInput({ threadId = null, isNewThread = false }) {
 
     setLoading(true);
     if (!isNewThread) {
-      addThreadMessage(threadId, newMessage);
+      handleAddMessage(threadId, newMessage);
     } else {
       threadId = await handleNewThread({ newMessage });
     }
@@ -79,77 +81,83 @@ export default function MessageInput({ threadId = null, isNewThread = false }) {
   };
 
   return (
-    <FormControl
-      minW={'100%'}
-      p={'0.5rem'}
-      position={'fixed'}
-      background={'var(--darkerPurpleGrayAlt)'}
-      bottom={0}>
-      <Box>
-        <HStack>
-          <InputGroup>
-            {isFocused ? (
-              <Textarea
-                autoFocus
-                ref={textareaRef}
-                onBlur={handleTextareaFocus}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleSend();
-                  }
-                }}
-                h={'auto'}
-                id='messageInput'
-                placeholder='Type a message...'
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                border={'1px solid var(--darkPurpleGray, #584361)'}
-                _hover={{
-                  border: '1px solid var(--darkPurpleGray, #584361)',
-                }}
-                resize={'vertical'}
-              />
-            ) : (
-              <Input
-                ref={inputRef}
-                onFocus={onFocus}
-                onBlur={onBlur}
-                type='text'
-                placeholder='Type a message...'
-                id='messageInput'
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                border={'1px solid var(--darkPurpleGray, #584361)'}
-                _hover={{
-                  border: '1px solid var(--darkPurpleGray, #584361)',
-                }}
-                borderRadius={'10rem'}
-              />
-            )}
+    <>
+      {!loading && (
+        <FormControl
+          minW={{ base: '100%', md: '70%' }}
+          w={{ base: '100%', md: '70%' }}
+          p={'0.5rem'}
+          position={'fixed'}
+          background={'var(--darkerPurpleGrayAlt)'}
+          right={0}
+          bottom={0}>
+          <Box>
+            <HStack>
+              <InputGroup>
+                {isFocused ? (
+                  <Textarea
+                    autoFocus
+                    ref={textareaRef}
+                    onBlur={handleTextareaFocus}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleSend();
+                      }
+                    }}
+                    h={'auto'}
+                    id='messageInput'
+                    placeholder='Type a message...'
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    border={'1px solid var(--darkPurpleGray, #584361)'}
+                    _hover={{
+                      border: '1px solid var(--darkPurpleGray, #584361)',
+                    }}
+                    resize={'vertical'}
+                  />
+                ) : (
+                  <Input
+                    ref={inputRef}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                    type='text'
+                    placeholder='Type a message...'
+                    id='messageInput'
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    border={'1px solid var(--darkPurpleGray, #584361)'}
+                    _hover={{
+                      border: '1px solid var(--darkPurpleGray, #584361)',
+                    }}
+                    borderRadius={'10rem'}
+                  />
+                )}
 
-            <InputRightAddon
-              maxW={'fit-content'}
-              p={0}
-              background={'transparent'}
-              border={'none'}
-              cursor={'pointer'}
-              _hover={{
-                background: 'var(--darkPurpleGray, #584361)',
-              }}>
-              <IconButton
-                disabled={newMessage === ''}
-                aria-label='Send message'
-                isRound
-                isLoading={loading}
-                onClick={handleSend}
-                icon={<ArrowUpIcon />}
-                ml={'0.5rem'}
-              />
-            </InputRightAddon>
-          </InputGroup>
-        </HStack>
-      </Box>
-    </FormControl>
+                <InputRightAddon
+                  maxW={'fit-content'}
+                  p={0}
+                  background={'transparent'}
+                  border={'none'}
+                  cursor={'pointer'}
+                  _hover={{
+                    background: 'var(--darkPurpleGray, #584361)',
+                  }}>
+                  <IconButton
+                    disabled={newMessage === ''}
+                    aria-label='Send message'
+                    isRound
+                    isLoading={loading}
+                    onClick={handleSend}
+                    icon={<ArrowUpIcon />}
+                    ml={'0.5rem'}
+                  />
+                </InputRightAddon>
+              </InputGroup>
+            </HStack>
+          </Box>
+        </FormControl>
+      )}
+    </>
   );
 }

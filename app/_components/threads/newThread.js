@@ -6,7 +6,10 @@ import { Box } from '@chakra-ui/react';
 
 export default function NewThread() {
   return (
-    <Box pt={'5rem'}>
+    <Box
+      position={'relative'}
+      pt={'5rem'}
+      w={'100%'}>
       <MessageInput isNewThread={true} />
     </Box>
   );

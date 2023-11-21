@@ -33,5 +33,5 @@ export async function GET() {
     return NextResponse.json({ data, error });
   }
 
-  return false;
+  return NextResponse.redirect('/auth');
 }

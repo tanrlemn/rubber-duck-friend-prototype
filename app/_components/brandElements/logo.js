@@ -6,13 +6,18 @@ import { Flex, Heading, Link, Box, Highlight } from '@chakra-ui/react';
 // local components
 import Underscore from '@/app/_components/brandElements/underscore.js';
 
-export default function Logo({ color, shouldLink = true, animate = false }) {
+export default function Logo({
+  color,
+  shouldLink = true,
+  animate = false,
+  isDesktop = false,
+}) {
   return (
     <>
       {shouldLink ? (
         <Link
-          pt={'0.2rem'}
-          mr={'1.25rem'}
+          pt={isDesktop ? 0 : '0.2rem'}
+          mr={isDesktop ? 0 : '1.25rem'}
           href='/'
           _hover={{ textDecoration: 'none' }}
           textDecoration={'none'}>

@@ -22,17 +22,22 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
 
   useEffect(() => {
     const getMessages = async () => {
-      setLoading(true);
-      const res = await fetch('/api/openai/getThreadMessages', {
-        method: 'POST',
-        body: JSON.stringify({
-          threadId: currentThreadId,
-        }),
-      });
+      try {
+        setLoading(true);
+        const res = await fetch('/api/openai/getThreadMessages', {
+          method: 'POST',
+          body: JSON.stringify({
+            threadId: currentThreadId,
+          }),
+        });
 
-      const { data } = await res.json();
+        const { data } = await res.json();
 
-      setMessages(data);
+        setMessages(data);
+      } catch (error) {
+        console.log('error', error);
+        setLoading(false);
+      }
     };
 
     const getRunStatus = async () => {
@@ -141,17 +146,22 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
   const handleRunAssistant = async (threadId) => {
     console.log('run assistant');
 
-    const res = await fetch('/api/openai/runAssistant', {
-      method: 'POST',
-      body: JSON.stringify({
-        threadId,
-      }),
-    });
+    try {
+      const res = await fetch('/api/openai/runAssistant', {
+        method: 'POST',
+        body: JSON.stringify({
+          threadId,
+        }),
+      });
 
-    const { status, id } = await res.json();
+      const { status, id } = await res.json();
 
-    setRunStatus(status);
-    setRunId(id);
+      setRunStatus(status);
+      setRunId(id);
+    } catch (error) {
+      console.log('error', error);
+      setLoading(false);
+    }
   };
 
   return {

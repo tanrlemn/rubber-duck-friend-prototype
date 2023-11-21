@@ -36,5 +36,5 @@ export async function GET() {
     return NextResponse.json({ threads, error });
   }
 
-  return false;
+  return NextResponse.redirect('/auth');
 }

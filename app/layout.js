@@ -13,6 +13,7 @@ import { ThemeProvider } from './lib/providers/ThemeProvider';
 import { LoadingProvider } from './lib/providers/LoadingProvider';
 import { ScaleProvider } from './lib/providers/ScaleProvider';
 import { SessionProvider } from './lib/providers/SessionProvider';
+import { LayoutProvider } from './lib/providers/LayoutProvider';
 
 // local components
 import Navbar from './_navigation/navbar';
@@ -48,8 +49,10 @@ export default async function RootLayout({ children }) {
           <ScaleProvider>
             <ThemeProvider>
               <SessionProvider session={session}>
-                <Navbar />
-                {children}
+                <LayoutProvider>
+                  <Navbar />
+                  {children}
+                </LayoutProvider>
               </SessionProvider>
             </ThemeProvider>
           </ScaleProvider>

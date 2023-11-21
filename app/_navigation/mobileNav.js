@@ -1,33 +1,27 @@
 'use client';
 
 // context
-import { SessionContext } from '../lib/providers/SessionProvider';
-import { LoadingContext } from '../lib/providers/LoadingProvider';
+import { LoadingContext } from '@/app/lib/providers/LoadingProvider';
 
 // supabase
 import { createBrowserClient } from '@supabase/ssr';
 
 // hooks
-import { useRef, useState, useEffect, useContext } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRef, useContext } from 'react';
+import { useRouter } from 'next/navigation';
 
 // chakra-ui
 import {
   Drawer,
   DrawerBody,
   DrawerFooter,
-  DrawerHeader,
   DrawerOverlay,
   DrawerContent,
-  DrawerCloseButton,
   Button,
   IconButton,
   useDisclosure,
-  Link,
   VStack,
-  Heading,
   Flex,
-  Box,
   HStack,
   Text,
 } from '@chakra-ui/react';
@@ -36,16 +30,29 @@ import { HamburgerIcon, EditIcon } from '@chakra-ui/icons';
 // local components
 import ThreadList from '../_components/threads/threadList';
 
-export default function MobileNav(handleSignOut) {
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
+export default function MobileNav() {
+  const { setLoading } = useContext(LoadingContext);
 
   const router = useRouter();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef();
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
+
+  const handleSignOut = async () => {
+    setLoading(true);
+    console.log('sign out');
+
+    localStorage.removeItem('threads');
+
+    await supabase.auth.signOut();
+
+    router.push('/auth');
+  };
 
   return (
     <>
@@ -94,7 +101,6 @@ export default function MobileNav(handleSignOut) {
                 <IconButton
                   ref={btnRef}
                   icon={<EditIcon />}
-                  onClick={onOpen}
                   background={'transparent'}
                   color={'var(--lightGray)'}
                   _hover={{
