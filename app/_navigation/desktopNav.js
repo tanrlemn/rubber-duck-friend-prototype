@@ -59,9 +59,9 @@ export default function DesktopNav() {
         backdropFilter={'blur(10px) saturate(100%)'}
         position={'relative'}
         top={'0'}
-        w={'30%'}
-        maxW={'30%'}
-        minW={'30%'}
+        w={'25%'}
+        maxW={'25%'}
+        minW={'25%'}
         h={'100vh'}
         overflowY={'scroll'}
         p={'0 1rem'}

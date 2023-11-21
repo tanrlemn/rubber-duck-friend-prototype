@@ -95,6 +95,7 @@ body {
   background: var(--darkerPurpleGray);
   min-height: 100vh;
   color-scheme: dark;
+  overflow: hidden;
 }
 
 body {

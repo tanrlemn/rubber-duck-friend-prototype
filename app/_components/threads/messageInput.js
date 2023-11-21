@@ -84,8 +84,8 @@ export default function MessageInput({ threadId = null, isNewThread = false }) {
     <>
       {!loading && (
         <FormControl
-          minW={{ base: '100%', md: '70%' }}
-          w={{ base: '100%', md: '70%' }}
+          minW={{ base: '100%', md: '75%' }}
+          w={{ base: '100%', md: '75%' }}
           p={'0.5rem'}
           position={'fixed'}
           background={'var(--darkerPurpleGrayAlt)'}

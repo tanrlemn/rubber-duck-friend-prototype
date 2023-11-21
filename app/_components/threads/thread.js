@@ -21,9 +21,12 @@ export default function Thread({ threadId }) {
       {!loading && (
         <>
           <List
+            overflowY={'scroll'}
+            maxH={'100vh'}
+            minH={'100vh'}
             w={'100%'}
-            p={'1.5rem'}
-            pb={'8rem'}>
+            p={'1rem'}
+            pb={'14rem'}>
             {messages &&
               messages.map((m) => (
                 <MessageBubble
