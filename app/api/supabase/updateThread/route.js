@@ -2,7 +2,11 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function POST(req) {
+  const request = await req.json();
+
+  const { threadId } = request;
+
   const cookieStore = cookies();
 
   const supabase = createServerClient(
@@ -30,8 +34,11 @@ export async function GET() {
   if (session) {
     const { data: threads, error } = await supabase
       .from('threads')
-      .select()
-      .order('updated_at', { ascending: false });
+      .update({
+        updated_at: new Date().toISOString(),
+      })
+      .eq('thread_id', threadId)
+      .select();
 
     return NextResponse.json({ threads, error });
   }

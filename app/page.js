@@ -5,16 +5,18 @@ import { LoadingContext } from '@/app/lib/providers/LoadingProvider';
 import { SessionContext } from '@/app/lib/providers/SessionProvider';
 
 // hooks
-import { useState, useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 
-// local components
-import ThreadList from './_components/threads/threadList';
-
 export default function Home() {
-  return (
-    <>
-      <ThreadList />
-    </>
-  );
+  const { session } = useContext(SessionContext);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session !== null) {
+      router.push('/threads');
+    }
+  });
+  return <></>;
 }

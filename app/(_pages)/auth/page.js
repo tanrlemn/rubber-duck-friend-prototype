@@ -10,13 +10,10 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 
 // hooks
-import { useRouter } from 'next/navigation';
-import { useState, useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
 // chakra-ui
 import { Box, Button, Heading, Input } from '@chakra-ui/react';
-
-import Loading from '../../loading';
 
 export default function AuthUI() {
   const { loading, setLoading } = useContext(LoadingContext);
@@ -27,20 +24,12 @@ export default function AuthUI() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   );
 
-  const router = useRouter();
-
   useEffect(() => {
-    if (session !== null) {
-      console.log('has session');
-      router.push('/');
-    }
-
     setLoading(false);
-  }, [session, router, setLoading, supabase]);
+  }, [session, setLoading, supabase]);
 
   return (
     <>
-      {loading && <Loading />}
       <Box p={'1.5rem'}>
         <Heading
           mb={'1rem'}

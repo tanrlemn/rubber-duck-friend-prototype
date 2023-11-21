@@ -2,12 +2,11 @@
 
 // context
 import { LoadingContext } from '@/app/lib/providers/LoadingProvider';
-// import { SessionContext } from '@/app/lib/providers/SessionProvider';
+import { SessionContext } from '@/app/lib/providers/SessionProvider';
 
 // hooks
 import { useContext, useEffect } from 'react';
 import { useIsMobile } from '@/app/lib/hooks/useIsMobile';
-import { usePathname, useRouter } from 'next/navigation';
 
 // chakra-ui
 import { Flex } from '@chakra-ui/react';
@@ -18,20 +17,14 @@ import DesktopNav from './desktopNav';
 import MobileNav from './mobileNav';
 
 export default function Navbar() {
-  const router = useRouter();
+  const { session } = useContext(SessionContext);
 
-  const pathname = usePathname();
   const { loading, setLoading } = useContext(LoadingContext);
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    // if (session) {
-    //   router.push('/dashboard');
-    // } else {
-    //   router.push('/auth');
-    // }
     setLoading(false);
-  }, [setLoading, isMobile, pathname, router]);
+  }, [setLoading, isMobile, session]);
 
   return (
     <Flex

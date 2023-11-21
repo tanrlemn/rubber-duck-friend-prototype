@@ -1,11 +1,11 @@
 'use client';
 
-// supabase
-// import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-
 // context
-// import { SessionContext } from '../lib/providers/SessionProvider';
+import { SessionContext } from '../lib/providers/SessionProvider';
 import { LoadingContext } from '../lib/providers/LoadingProvider';
+
+// supabase
+import { createBrowserClient } from '@supabase/ssr';
 
 // hooks
 import { useRef, useState, useEffect, useContext } from 'react';
@@ -28,30 +28,32 @@ import {
   Heading,
   Flex,
   Box,
+  HStack,
+  Text,
 } from '@chakra-ui/react';
 import { HamburgerIcon, EditIcon } from '@chakra-ui/icons';
 
-// local components
-import { routeList } from './routeList';
-
 export default function MobileNav() {
-  // const supabase = createClientComponentClient();
+  const { setLoading } = useContext(LoadingContext);
+  const { session } = useContext(SessionContext);
+  const pathname = usePathname();
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
 
   const router = useRouter();
-
-  const { setLoading } = useContext(LoadingContext);
-  // const { session } = useContext(SessionContext);
-  const pathname = usePathname();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef();
 
   const handleSignOut = async () => {
-    // setLoading(true);
-    // await supabase.auth.signOut();
+    setLoading(true);
+    await supabase.auth.signOut();
 
-    // router.refresh();
-    // router.push('/auth');
+    router.refresh();
+    router.push('/auth');
 
     console.log('sign out');
   };
@@ -64,6 +66,7 @@ export default function MobileNav() {
           icon={<HamburgerIcon />}
           onClick={onOpen}
           background={'transparent'}
+          color={'var(--purpleGrayAlt)'}
           _hover={{
             background: 'transparent',
           }}
@@ -86,44 +89,29 @@ export default function MobileNav() {
 
           <DrawerBody>
             <VStack align={'flex-start'}>
-              {/* {routeList.map((route) => (
-                <Link
-                  mb={'1rem'}
-                  key={route.path}
-                  href={route.path}>
-                  <Heading
-                    size={'md'}
-                    fontWeight={500}>
-                    {route.title}
-                  </Heading>
-                </Link>
-              ))} */}
-              <Link
-                w={'100%'}
+              <HStack
+                cursor={'pointer'}
                 onClick={() => {
+                  router.push('/threads/new');
                   onClose();
                 }}>
-                <Heading
-                  mt={'1rem'}
-                  mb={'2rem'}
-                  borderTop={'1px solid var(--darkPurpleGray)'}
-                  pt={'2rem'}
-                  size={'md'}
-                  fontWeight={500}>
-                  + New Message
-                </Heading>
-              </Link>
-              {/* <Button onClick={handleSignOut}>Sign out</Button> */}
+                <IconButton
+                  ref={btnRef}
+                  icon={<EditIcon />}
+                  onClick={onOpen}
+                  background={'transparent'}
+                  color={'var(--lightGray)'}
+                  _hover={{
+                    background: 'transparent',
+                  }}
+                />
+                <Text w={'100%'}>New conversation</Text>
+              </HStack>
             </VStack>
           </DrawerBody>
 
           <DrawerFooter>
-            <Button
-              variant='outline'
-              mr={3}
-              onClick={onClose}>
-              Close menu
-            </Button>
+            <Button onClick={handleSignOut}>Sign out</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
