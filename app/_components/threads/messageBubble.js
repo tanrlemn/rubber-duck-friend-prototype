@@ -29,7 +29,7 @@ export default function MessageBubble({
     if (isLatestMessage) {
       document
         .getElementById(message.id)
-        .scrollIntoView({ behavior: 'smooth' });
+        .scrollIntoView({ behavior: 'smooth', block: 'end' });
       setLoading(false);
     }
   }, [message, isLatestMessage, setLoading]);
@@ -41,7 +41,7 @@ export default function MessageBubble({
       display={'flex'}
       flexDirection={'column'}
       alignItems={role === 'user' ? 'flex-end' : 'flex-start'}
-      mt={'1rem'}>
+      m={'1.5rem 0'}>
       <Text
         maxW={{ base: '100%', md: '30rem' }}
         p={'1rem'}

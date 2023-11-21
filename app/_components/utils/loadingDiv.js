@@ -10,26 +10,21 @@ import { useEffect, useState, useContext } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 
 // local components
-import Logo from './_components/brandElements/logo';
+import Logo from '../brandElements/logo';
 
-export default function Loading() {
-  const { loading, setLoading } = useContext(LoadingContext);
+export default function LoadingDiv() {
+  const { loadingInPlace } = useContext(LoadingContext);
 
   const [extraLoading, setExtraLoading] = useState(true);
 
   useEffect(() => {
     const timeout = Math.random() * 1000;
 
-    !loading &&
+    !loadingInPlace &&
       setTimeout(() => {
         setExtraLoading(false);
       }, timeout);
-
-    loading &&
-      setTimeout(() => {
-        setLoading(false);
-      }, 5000);
-  }, [loading, setLoading]);
+  }, [loadingInPlace]);
 
   return (
     <>
@@ -37,11 +32,12 @@ export default function Loading() {
         <Flex
           align={'center'}
           justify={'center'}
-          w={'100vw'}
-          h={'100vh'}
-          position={'fixed'}
+          w={'100%'}
+          position={'relative'}
+          p={'1rem'}
           zIndex={1000}
           backdropFilter={'blur(10px) saturate(100%)'}
+          left={0}
           top={0}>
           <Box
             className='loading'

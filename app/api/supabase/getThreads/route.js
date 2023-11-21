@@ -28,9 +28,12 @@ export async function GET() {
   } = await supabase.auth.getSession();
 
   if (session) {
-    const { data, error } = await supabase.from('profiles').select();
+    const { data: threads, error } = await supabase
+      .from('threads')
+      .select()
+      .order('updated_at', { ascending: false });
 
-    return NextResponse.json({ data, error });
+    return NextResponse.json({ threads, error });
   }
 
   return NextResponse.redirect('/auth');

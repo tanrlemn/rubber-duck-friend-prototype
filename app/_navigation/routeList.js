@@ -1,6 +1,6 @@
 export const routeList = [
   {
-    title: 'Thread',
-    path: '/thread',
+    title: 'Threads',
+    path: '/threads',
   },
 ];

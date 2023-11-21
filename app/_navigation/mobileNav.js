@@ -1,59 +1,57 @@
 'use client';
 
-// supabase
-// import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-
 // context
-// import { SessionContext } from '../lib/providers/SessionProvider';
-import { LoadingContext } from '../lib/providers/LoadingProvider';
+import { LoadingContext } from '@/app/lib/providers/LoadingProvider';
+
+// supabase
+import { createBrowserClient } from '@supabase/ssr';
 
 // hooks
-import { useRef, useState, useEffect, useContext } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRef, useContext } from 'react';
+import { useRouter } from 'next/navigation';
 
 // chakra-ui
 import {
   Drawer,
   DrawerBody,
   DrawerFooter,
-  DrawerHeader,
   DrawerOverlay,
   DrawerContent,
-  DrawerCloseButton,
   Button,
   IconButton,
   useDisclosure,
-  Link,
   VStack,
-  Heading,
   Flex,
-  Box,
+  HStack,
+  Text,
 } from '@chakra-ui/react';
 import { HamburgerIcon, EditIcon } from '@chakra-ui/icons';
 
 // local components
-import { routeList } from './routeList';
+import ThreadList from '../_components/threads/threadList';
 
 export default function MobileNav() {
-  // const supabase = createClientComponentClient();
+  const { setLoading } = useContext(LoadingContext);
 
   const router = useRouter();
-
-  const { setLoading } = useContext(LoadingContext);
-  // const { session } = useContext(SessionContext);
-  const pathname = usePathname();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef();
 
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
+
   const handleSignOut = async () => {
-    // setLoading(true);
-    // await supabase.auth.signOut();
-
-    // router.refresh();
-    // router.push('/auth');
-
+    setLoading(true);
     console.log('sign out');
+
+    localStorage.removeItem('threads');
+
+    await supabase.auth.signOut();
+
+    router.push('/auth');
   };
 
   return (
@@ -64,6 +62,7 @@ export default function MobileNav() {
           icon={<HamburgerIcon />}
           onClick={onOpen}
           background={'transparent'}
+          color={'var(--purpleGrayAlt)'}
           _hover={{
             background: 'transparent',
           }}
@@ -72,58 +71,49 @@ export default function MobileNav() {
 
       <Drawer
         isOpen={isOpen}
-        placement='right'
+        placement='left'
         onClose={onClose}
         finalFocusRef={btnRef}>
         <DrawerOverlay />
         <DrawerContent
           background={'var(--darkPurpleGrayAlt)'}
           backdropFilter={'blur(10px) saturate(100%)'}>
-          <DrawerCloseButton />
-          <DrawerHeader>
-            <Box h={'4rem'}></Box>
-          </DrawerHeader>
-
-          <DrawerBody>
-            <VStack align={'flex-start'}>
-              {/* {routeList.map((route) => (
-                <Link
-                  mb={'1rem'}
-                  key={route.path}
-                  href={route.path}>
-                  <Heading
-                    size={'md'}
-                    fontWeight={500}>
-                    {route.title}
-                  </Heading>
-                </Link>
-              ))} */}
-              <Link
-                w={'100%'}
+          <DrawerBody
+            p={0}
+            overflowX={'hidden'}>
+            <VStack
+              align={'flex-start'}
+              p={'1rem'}>
+              <HStack
+                background={'var(--darkPurpleGrayAlt)'}
+                mb={'1.5rem'}
+                borderBottom={'1px solid var(--darkPurpleGray)'}
+                pb={'1rem'}
+                pt={'1rem'}
+                minW={'100%'}
+                cursor={'pointer'}
+                position={'sticky'}
+                top={0}
                 onClick={() => {
+                  router.push('/threads/new');
                   onClose();
                 }}>
-                <Heading
-                  mt={'1rem'}
-                  mb={'2rem'}
-                  borderTop={'1px solid var(--darkPurpleGray)'}
-                  pt={'2rem'}
-                  size={'md'}
-                  fontWeight={500}>
-                  + New Message
-                </Heading>
-              </Link>
-              {/* <Button onClick={handleSignOut}>Sign out</Button> */}
+                <IconButton
+                  ref={btnRef}
+                  icon={<EditIcon />}
+                  background={'transparent'}
+                  color={'var(--lightGray)'}
+                  _hover={{
+                    background: 'transparent',
+                  }}
+                />
+                <Text w={'100%'}>New conversation</Text>
+              </HStack>
+              <ThreadList />
             </VStack>
           </DrawerBody>
-
           <DrawerFooter>
-            <Button
-              variant='outline'
-              mr={3}
-              onClick={onClose}>
-              Close menu
-            </Button>
+            <Button onClick={handleSignOut}>Sign out</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
