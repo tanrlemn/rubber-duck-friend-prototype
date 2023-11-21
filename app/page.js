@@ -1,7 +1,6 @@
 'use client';
 
 // context
-import { LoadingContext } from '@/app/lib/providers/LoadingProvider';
 import { SessionContext } from '@/app/lib/providers/SessionProvider';
 
 // hooks
@@ -15,7 +14,7 @@ export default function Home() {
 
   useEffect(() => {
     if (session !== null) {
-      router.push('/threads');
+      router.push('/threads/new');
     }
   });
   return <></>;

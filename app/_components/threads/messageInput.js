@@ -28,8 +28,10 @@ export default function MessageInput({ threadId = null, isNewThread = false }) {
 
   const router = useRouter();
 
-  const { runStatus, handleNewThread, addThreadMessage } =
-    useOpenaiThreads(threadId);
+  const { runStatus, handleNewThread, addThreadMessage } = useOpenaiThreads(
+    threadId,
+    isNewThread
+  );
 
   const { loading, setLoading } = useContext(LoadingContext);
   const [newMessage, setNewMessage] = useState('');
@@ -43,10 +45,6 @@ export default function MessageInput({ threadId = null, isNewThread = false }) {
     if (runStatus === 'completed') {
       setLoading(false);
       setNewMessage('');
-
-      if (isNewThread) {
-        router.push(`/threads/${threadId}}`);
-      }
     }
   }, [runStatus, setLoading, threadId, isNewThread, router]);
 
@@ -66,6 +64,18 @@ export default function MessageInput({ threadId = null, isNewThread = false }) {
     } else {
       threadId = await handleNewThread({ newMessage });
     }
+
+    const threadsStorage = JSON.parse(localStorage.getItem('threads'));
+
+    localStorage.setItem(
+      'threads',
+      JSON.stringify([
+        {
+          groups: threadsStorage.groups,
+          revalidate: true,
+        },
+      ])
+    );
   };
 
   return (

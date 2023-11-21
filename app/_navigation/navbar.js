@@ -26,6 +26,15 @@ export default function Navbar() {
     setLoading(false);
   }, [setLoading, isMobile, session]);
 
+  const handleSignOut = async () => {
+    setLoading(true);
+    router.push('/auth');
+
+    await supabase.auth.signOut();
+
+    console.log('sign out');
+  };
+
   return (
     <Flex
       zIndex={1000}
@@ -41,7 +50,11 @@ export default function Navbar() {
         w={'100%'}
         justify={{ base: 'space-between', md: 'center' }}>
         <Logo color={'var(--purpleGrayAlt)'} />
-        {!loading && isMobile ? <MobileNav /> : <DesktopNav />}
+        {!loading && isMobile ? (
+          <MobileNav handleSignOut={handleSignOut} />
+        ) : (
+          <DesktopNav handleSignOut={handleSignOut} />
+        )}
       </Flex>
     </Flex>
   );

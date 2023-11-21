@@ -6,11 +6,15 @@ import { SessionContext } from '@/app/lib/providers/SessionProvider';
 
 // hooks
 import { useState, useEffect, useContext } from 'react';
+import { useRouter } from 'next/navigation';
 
-export function useOpenaiThreads(threadId = null) {
+export function useOpenaiThreads(threadId = null, isNewThread = false) {
   const { setLoading } = useContext(LoadingContext);
   const { session } = useContext(SessionContext);
 
+  const router = useRouter();
+
+  const [currentThreadId, setCurrentThreadId] = useState(threadId);
   const [runId, setRunId] = useState(null);
   const [runStatus, setRunStatus] = useState(null);
   const [refreshStatus, setRefreshStatus] = useState(false);
@@ -22,7 +26,7 @@ export function useOpenaiThreads(threadId = null) {
       const res = await fetch('/api/openai/getThreadMessages', {
         method: 'POST',
         body: JSON.stringify({
-          threadId: threadId,
+          threadId: currentThreadId,
         }),
       });
 
@@ -35,7 +39,7 @@ export function useOpenaiThreads(threadId = null) {
       const res = await fetch('/api/openai/runStatus', {
         method: 'POST',
         body: JSON.stringify({
-          threadId: threadId,
+          threadId: currentThreadId,
           runId: runId,
         }),
       });
@@ -45,20 +49,14 @@ export function useOpenaiThreads(threadId = null) {
       setRunStatus(status);
     };
 
-    if (messages === null && threadId !== null) {
+    if (messages === null && currentThreadId !== null) {
       getMessages();
     }
 
     if (runStatus !== null) {
       console.log('runStatus', runStatus);
 
-      if (
-        runStatus !== 'completed' &&
-        !refreshStatus &&
-        threadId !== null &&
-        runId !== null &&
-        runStatus !== null
-      ) {
+      if (runStatus !== 'completed' && !refreshStatus && runId !== null) {
         console.log('refresh status');
         setRefreshStatus(true);
 
@@ -71,6 +69,8 @@ export function useOpenaiThreads(threadId = null) {
       if (runStatus === 'completed') {
         getMessages();
         setRunStatus(null);
+
+        isNewThread && router.push(`/threads/${currentThreadId}`);
       }
     }
   }, [
@@ -80,13 +80,15 @@ export function useOpenaiThreads(threadId = null) {
     messages,
     setLoading,
     session,
-    threadId,
+    currentThreadId,
+    router,
+    isNewThread,
   ]);
 
   const handleNewThreadId = (id) => {
-    threadId = id;
+    setCurrentThreadId(id);
 
-    handleRunAssistant(threadId);
+    handleRunAssistant(id);
   };
 
   const handleNewThread = async ({ newMessage }) => {
@@ -101,7 +103,7 @@ export function useOpenaiThreads(threadId = null) {
 
     handleAddMessage(id, newMessage);
 
-    threadId = id;
+    setCurrentThreadId(id);
 
     await fetch('/api/supabase/newThread', {
       method: 'POST',
