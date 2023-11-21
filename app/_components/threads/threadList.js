@@ -13,6 +13,7 @@ export default function ThreadList() {
   const { loading, setLoading } = useContext(LoadingContext);
 
   const [threads, setThreads] = useState(null);
+  const [updatedThreads, setUpdatedThreads] = useState(null);
 
   useEffect(() => {
     const getThreads = async () => {
@@ -29,66 +30,87 @@ export default function ThreadList() {
     };
 
     const getLastMessage = async (threadId) => {
-      const res = await fetch('/api/openai/getThreadMessages', {
+      try {
+        const res = await fetch('/api/openai/getThreadMessages', {
+          method: 'POST',
+          body: JSON.stringify({
+            threadId: threadId,
+          }),
+        });
+
+        const { body } = await res.json();
+
+        const { last_id, data } = body;
+
+        const lastMessage = data.find((message) => message.id === last_id);
+
+        return lastMessage;
+      } catch (error) {
+        console.log('error', error);
+        deleteThread(threadId);
+      }
+    };
+
+    const deleteThread = async (threadId) => {
+      await fetch('/api/openai/deleteThread', {
         method: 'POST',
         body: JSON.stringify({
           threadId: threadId,
         }),
       });
 
-      const { body } = await res.json();
+      await fetch('/api/supabase/deleteThread', {
+        method: 'POST',
+        body: JSON.stringify({
+          threadId: threadId,
+        }),
+      });
+    };
 
-      const { last_id, data } = body;
+    const updateThreads = async () => {
+      const newThreads = Promise.all(
+        threads.map(async (thread) => {
+          const lastMessage = await getLastMessage(thread.thread_id);
+          console.log('thread', thread, 'lastMessage', await lastMessage);
 
-      const lastMessage = data.find((message) => message.id === last_id);
+          let lastMessageText = await lastMessage?.content[0].text.value;
+          lastMessageText = `${lastMessageText?.substring(0, 70)}...`;
 
-      return lastMessage;
+          const messageDate = new Date(await lastMessage.created_at);
+          const messageDateFormatted = messageDate.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+          });
+
+          return {
+            ...thread,
+            lastMessage: lastMessageText,
+            lastMessageDate: messageDateFormatted,
+          };
+        })
+      );
+
+      setUpdatedThreads(await newThreads);
+      console.log('newThreads', await newThreads);
     };
 
     threads === null && getThreads();
 
-    // if (threads !== null && loading) {
-    //   threads.map(async (thread, i) => {
-    //     const lastMessage = await getLastMessage(thread.thread_id);
-
-    //     setThreads(
-    //       threads.map((t) => {
-    //         if (thread.thread_id === t.thread_id) {
-    //           return {
-    //             ...thread,
-    //             lastMessage: lastMessage,
-    //           };
-    //         }
-    //         return t;
-    //       })
-    //     );
-    //     if (i === threads.length - 1) {
-    //       setLoading(false);
-    //     }
-    //   });
-    // }
-  }, [threads, setLoading, loading]);
+    if (threads !== null && updatedThreads === null) {
+      // console.log('threads', threads);
+      updateThreads();
+    }
+  }, [threads, setLoading, loading, updatedThreads]);
 
   return (
     <List
       p={'1.5rem'}
       pb={'6rem'}>
       {threads !== null &&
-        threads.map((thread) => {
-          // if (!thread.lastMessage) return;
-
-          // const lastMessage = thread.lastMessage;
-          // let lastMessageText = lastMessage?.content[0].text.value;
-          // lastMessageText = `${lastMessageText?.substring(0, 70)}...`;
-
-          // const messageDate = new Date(lastMessage.created_at);
-          // const messageDateFormatted = messageDate.toLocaleDateString('en-US', {
-          //   month: 'short',
-          //   day: 'numeric',
-          //   hour: 'numeric',
-          //   minute: 'numeric',
-          // });
-
+        updatedThreads !== null &&
+        updatedThreads.map((thread) => {
           return (
             <ListItem
               key={thread.thread_id}
@@ -97,8 +119,12 @@ export default function ThreadList() {
               pb={'1rem'}
               minW={'100%'}>
               <Link href={`/threads/${thread.thread_id}`}>
-                {/* <Text color={'var(--lightGray)'}>{messageDateFormatted}</Text> */}
-                <Text>{thread.thread_id}</Text>
+                <Text
+                  color={'var(--lightGray)'}
+                  fontSize={'0.8rem'}>
+                  {thread.lastMessageDate}
+                </Text>
+                <Text>{thread.lastMessage}</Text>
               </Link>
             </ListItem>
           );
