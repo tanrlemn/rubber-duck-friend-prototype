@@ -3,14 +3,17 @@
 // context
 import { LoadingContext } from '@/app/lib/providers/LoadingProvider';
 import { SessionContext } from '@/app/lib/providers/SessionProvider';
+import { ThreadContext } from '../providers/ThreadProvider';
 
 // hooks
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 export function useOpenaiThreads(threadId = null, isNewThread = false) {
-  const { setLoading, setLoadingInPlace } = useContext(LoadingContext);
+  const { setLoading, setLoadingInPlace, loadingInPlace } =
+    useContext(LoadingContext);
   const { session } = useContext(SessionContext);
+  const { setThreadMessages } = useContext(ThreadContext);
 
   const router = useRouter();
 
@@ -31,16 +34,13 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
 
       const { data } = await res.json();
 
-      setMessages(data);
+      setThreadMessages(data);
       console.log('data', data);
-      setTimeout(() => {
-        setLoadingInPlace(false);
-      }, 1000);
     } catch (error) {
       console.log('error', error);
       setLoading(false);
     }
-  }, [currentThreadId, setLoading, setLoadingInPlace]);
+  }, [currentThreadId, setLoading, setThreadMessages]);
 
   useEffect(() => {
     const getRunStatus = async () => {
@@ -75,16 +75,15 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
       }
 
       if (runStatus === 'completed') {
-        const timeoutId = setTimeout(() => {
-          getMessages();
-          setRunStatus(null);
+        getMessages();
+        setRunStatus(null);
 
-          if (isNewThread) {
-            router.push(`/threads/${currentThreadId}`);
-          }
-        }, 1000);
-
-        return () => clearTimeout(timeoutId);
+        if (isNewThread) {
+          router.push(`/threads/${currentThreadId}`);
+        }
+        if (loadingInPlace) {
+          setLoadingInPlace(false);
+        }
       }
     }
   }, [
@@ -98,6 +97,7 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
     router,
     isNewThread,
     setLoadingInPlace,
+    loadingInPlace,
     getMessages,
   ]);
 

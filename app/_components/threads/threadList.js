@@ -206,7 +206,9 @@ export default function ThreadList({ isDesktop = false }) {
                       pb={'1rem'}
                       pt={'1rem'}
                       minW={'100%'}>
-                      <Link href={`/threads/${thread.thread_id}`}>
+                      <Link
+                        href={`/threads/${thread.thread_id}`}
+                        onClick={() => setLoading(true)}>
                         <Text>{thread.lastMessage}</Text>
                       </Link>
                     </ListItem>

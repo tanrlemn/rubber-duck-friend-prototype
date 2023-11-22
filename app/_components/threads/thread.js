@@ -2,9 +2,10 @@
 
 // context
 import { LoadingContext } from '@/app/lib/providers/LoadingProvider';
+import { ThreadContext } from '@/app/lib/providers/ThreadProvider';
 
 // hooks
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useOpenaiThreads } from '@/app/lib/hooks/useOpenaiThreads';
 
 // chakra-ui
@@ -16,34 +17,34 @@ import MessageInput from './messageInput';
 
 export default function Thread({ threadId }) {
   const { loading, loadingInPlace } = useContext(LoadingContext);
-  const { messages } = useOpenaiThreads(threadId);
-
-  const [, forceUpdate] = useState();
+  const { threadMessages } = useContext(ThreadContext);
 
   useEffect(() => {
-    forceUpdate((n) => !n);
-  }, [messages]);
+    console.log('new message received, reloading thread');
+  }, [threadMessages]);
 
   return (
     <>
       {!loading && (
         <>
-          {console.log('Rendering messages:', messages)}
           <List
             overflowY={'scroll'}
             maxH={'100vh'}
             minH={'100vh'}
             w={'100%'}
             p={'1rem'}
+            pt={'5rem'}
             pb={'8rem'}>
-            {messages !== null &&
-              messages.map((m) => {
+            {threadMessages !== null &&
+              threadMessages.map((m) => {
                 return (
                   <MessageBubble
                     key={m.id}
                     role={m.role}
                     message={m}
-                    isLatestMessage={messages[messages.length - 1].id === m.id}
+                    isLatestMessage={
+                      threadMessages[threadMessages.length - 1].id === m.id
+                    }
                   />
                 );
               })}

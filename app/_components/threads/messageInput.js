@@ -2,13 +2,13 @@
 
 // context
 import { LoadingContext } from '@/app/lib/providers/LoadingProvider';
+import { ThreadContext } from '@/app/lib/providers/ThreadProvider';
 
 // hooks
 import { useState, useContext, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAutosizeTextarea } from '@/app/lib/hooks/useAutosizeTextarea';
 import { useOpenaiThreads } from '@/app/lib/hooks/useOpenaiThreads';
-import { useWindowHeightScroll } from '@/app/lib/hooks/useWindowHeight';
 
 // chakra-ui
 import {
@@ -27,39 +27,30 @@ import { ArrowUpIcon } from '@chakra-ui/icons';
 import Underscore from '../brandElements/underscore';
 
 export default function MessageInput({ threadId = null, isNewThread = false }) {
+  const { setLoading, loadingInPlace, setLoadingInPlace } =
+    useContext(LoadingContext);
+  const { setThreadMessages } = useContext(ThreadContext);
+
   const inputRef = useRef(null);
   const textareaRef = useRef(null);
 
   const router = useRouter();
-  const { setNewWindowHeight, newWindowHeight, windowHeight } =
-    useWindowHeightScroll();
 
   const { runStatus, handleNewThread, handleAddMessage } = useOpenaiThreads(
     threadId,
     isNewThread
   );
 
-  const { setLoading, loadingInPlace, setLoadingInPlace } =
-    useContext(LoadingContext);
-
   const [newMessage, setNewMessage] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [disabled, setDisabled] = useState(true);
 
-  const onFocus = () => {
-    setIsFocused(true);
-  };
-
-  const onBlur = () => {
-    setIsFocused(false);
-    window.scrollTo(0, 0);
-  };
+  const onFocus = () => setIsFocused(true);
+  const onBlur = () => setIsFocused(false);
 
   useAutosizeTextarea(textareaRef.current, newMessage);
 
   useEffect(() => {
-    setNewWindowHeight(window.innerHeight);
-
     if (runStatus === 'completed') {
       setNewMessage('');
     }
@@ -71,16 +62,7 @@ export default function MessageInput({ threadId = null, isNewThread = false }) {
     }
 
     setLoading(false);
-  }, [
-    newMessage,
-    runStatus,
-    setLoading,
-    threadId,
-    isNewThread,
-    router,
-    newWindowHeight,
-    setNewWindowHeight,
-  ]);
+  }, [newMessage, runStatus, setLoading, threadId, isNewThread, router]);
 
   const handleSend = async () => {
     if (disabled || loadingInPlace || newMessage === '') {
@@ -91,6 +73,15 @@ export default function MessageInput({ threadId = null, isNewThread = false }) {
     // setIsFocused(false);
 
     if (!isNewThread) {
+      setThreadMessages((prev) => [
+        ...prev,
+        {
+          id: prev.length,
+          role: 'user',
+          content: [{ text: { value: newMessage } }],
+        },
+      ]);
+
       handleAddMessage(threadId, newMessage);
     } else {
       threadId = await handleNewThread({ newMessage });
@@ -113,8 +104,6 @@ export default function MessageInput({ threadId = null, isNewThread = false }) {
     if (newMessage === '' && isFocused === true) {
       setIsFocused(false);
     }
-
-    window.scrollTo(0, 0);
   };
 
   return (
@@ -122,7 +111,7 @@ export default function MessageInput({ threadId = null, isNewThread = false }) {
       <FormControl
         minW={{ base: '100%', md: '75%' }}
         w={{ base: '100%', md: '75%' }}
-        p={'0.5rem'}
+        p={'0.5rem 0.5rem 2rem 0.5rem'}
         position={'fixed'}
         background={'var(--darkerPurpleGrayAlt)'}
         right={0}

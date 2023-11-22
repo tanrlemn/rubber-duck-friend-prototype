@@ -49,10 +49,16 @@ export default function MessageBubble({
 
   useEffect(() => {
     if (isLatestMessage) {
-      document
-        .getElementById(loadingBubble ? 'loadingBubble' : message.id)
-        .scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setLoading(false);
+      setTimeout(() => {
+        document
+          .getElementById(loadingBubble ? 'loadingBubble' : message.id)
+          .scrollIntoView({
+            block: 'start',
+            inline: 'nearest',
+            behavior: 'smooth',
+          });
+        setLoading(false);
+      }, 500);
     }
 
     if (message) {

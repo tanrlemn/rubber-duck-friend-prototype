@@ -14,3 +14,20 @@ export function useIsMobile() {
 
   return isMobile;
 }
+
+export function useIsRunningStandalone() {
+  const [isRunningStandalone, setIsRunningStandalone] = useState(false);
+
+  useEffect(() => {
+    const checkIfRunningStandalone = () => {
+      if (window.matchMedia('(display-mode: standalone)').matches) {
+        return true;
+      }
+      return false;
+    };
+
+    setIsRunningStandalone(checkIfRunningStandalone());
+  }, []);
+
+  return isRunningStandalone;
+}
