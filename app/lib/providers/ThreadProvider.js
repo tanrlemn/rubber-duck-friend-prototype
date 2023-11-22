@@ -9,7 +9,7 @@ export function ThreadProvider({ children }) {
   const [threadMessages, setThreadMessages] = useState(null);
 
   useEffect(() => {
-    console.log('threadMessages', threadMessages);
+    console.log('new message received, reloading thread');
   }, [threadMessages]);
 
   return (

@@ -33,7 +33,7 @@ export default function Thread({ threadId }) {
             minH={'100vh'}
             w={'100%'}
             p={'1rem'}
-            pt={'5rem'}
+            pt={'6rem'}
             pb={'8rem'}>
             {threadMessages !== null &&
               threadMessages.map((m) => {

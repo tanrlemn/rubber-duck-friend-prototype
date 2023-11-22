@@ -13,7 +13,16 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useContext, useEffect } from 'react';
 
 // chakra-ui
-import { Box, Button, Heading, Input } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Input,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
+import LogoIcon from '@/app/_components/brandElements/logoIcon';
 
 export default function AuthUI() {
   const { setLoading } = useContext(LoadingContext);
@@ -30,17 +39,26 @@ export default function AuthUI() {
 
   return (
     <>
-      <Box
+      <VStack
         p={'1.5rem'}
+        pt={'10rem'}
         pl={{ base: null, md: '5rem' }}>
+        <Box
+          maxH={'3rem'}
+          maxW={'3rem'}>
+          <LogoIcon />
+        </Box>
         <Heading
-          mb={'1rem'}
-          mt={'2rem'}>
-          Sign in
+          mt={'0.5rem'}
+          size={'lg'}
+          mb={'0.5rem'}>
+          Get started
         </Heading>
         <Auth
           supabaseClient={supabase}
-          appearance={{ theme: ThemeSupa }}
+          appearance={{
+            theme: ThemeSupa,
+          }}
           providers={['google']}
           queryParams={{
             access_type: 'offline',
@@ -49,7 +67,7 @@ export default function AuthUI() {
           onlyThirdPartyProviders
           theme='dark'
         />
-      </Box>
+      </VStack>
     </>
   );
 }

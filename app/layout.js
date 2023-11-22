@@ -99,8 +99,8 @@ export default async function RootLayout({ children }) {
               <SessionProvider session={session}>
                 <LayoutProvider>
                   <ThreadProvider>
-                    <Navbar />
                     {children}
+                    <Navbar />
                   </ThreadProvider>
                 </LayoutProvider>
               </SessionProvider>

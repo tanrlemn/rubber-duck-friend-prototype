@@ -53,6 +53,7 @@
   --darkPurpleGrayAlt90: #432e4cca;
   --darkerPurpleGray: #221428;
   --darkerPurpleGrayAlt: #2d2033;
+  --darkerPurpleGrayAlt90: #2d2033ce;
   --darkestPurple: #210735;
   --darkestPurple90: #210735ca;
 
@@ -94,14 +95,10 @@ html,
 body {
   max-width: 100vw;
   color: var(--white);
-  background: var(--darkerPurpleGray);
+  background: var(--darkerPurpleGray) !important;
   min-height: 100vh;
   color-scheme: dark;
   overflow: hidden;
-}
-
-body {
-  background: transparent !important;
 }
 
 .loading {

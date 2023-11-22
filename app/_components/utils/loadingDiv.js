@@ -35,7 +35,7 @@ export default function LoadingDiv() {
           w={'100%'}
           position={'relative'}
           p={'1rem'}
-          zIndex={1000}
+          zIndex={10}
           backdropFilter={'blur(10px) saturate(100%)'}
           left={0}
           top={0}>
