@@ -21,7 +21,8 @@
     "next": "14.0.3",
     "openai": "^4.19.1",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-remark": "^2.1.0"
   },
   "devDependencies": {
     "eslint": "^8",

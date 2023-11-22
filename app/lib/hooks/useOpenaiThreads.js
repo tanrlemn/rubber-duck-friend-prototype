@@ -5,11 +5,11 @@ import { LoadingContext } from '@/app/lib/providers/LoadingProvider';
 import { SessionContext } from '@/app/lib/providers/SessionProvider';
 
 // hooks
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 export function useOpenaiThreads(threadId = null, isNewThread = false) {
-  const { setLoading } = useContext(LoadingContext);
+  const { setLoading, setLoadingInPlace } = useContext(LoadingContext);
   const { session } = useContext(SessionContext);
 
   const router = useRouter();
@@ -20,26 +20,29 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
   const [refreshStatus, setRefreshStatus] = useState(false);
   const [messages, setMessages] = useState(null);
 
+  const getMessages = useCallback(async () => {
+    try {
+      const res = await fetch('/api/openai/getThreadMessages', {
+        method: 'POST',
+        body: JSON.stringify({
+          threadId: currentThreadId,
+        }),
+      });
+
+      const { data } = await res.json();
+
+      setMessages(data);
+      console.log('data', data);
+      setTimeout(() => {
+        setLoadingInPlace(false);
+      }, 1000);
+    } catch (error) {
+      console.log('error', error);
+      setLoading(false);
+    }
+  }, [currentThreadId, setLoading, setLoadingInPlace]);
+
   useEffect(() => {
-    const getMessages = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch('/api/openai/getThreadMessages', {
-          method: 'POST',
-          body: JSON.stringify({
-            threadId: currentThreadId,
-          }),
-        });
-
-        const { data } = await res.json();
-
-        setMessages(data);
-      } catch (error) {
-        console.log('error', error);
-        setLoading(false);
-      }
-    };
-
     const getRunStatus = async () => {
       const res = await fetch('/api/openai/runStatus', {
         method: 'POST',
@@ -72,10 +75,16 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
       }
 
       if (runStatus === 'completed') {
-        getMessages();
-        setRunStatus(null);
+        const timeoutId = setTimeout(() => {
+          getMessages();
+          setRunStatus(null);
 
-        isNewThread && router.push(`/threads/${currentThreadId}`);
+          if (isNewThread) {
+            router.push(`/threads/${currentThreadId}`);
+          }
+        }, 1000);
+
+        return () => clearTimeout(timeoutId);
       }
     }
   }, [
@@ -88,6 +97,8 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
     currentThreadId,
     router,
     isNewThread,
+    setLoadingInPlace,
+    getMessages,
   ]);
 
   const handleNewThreadId = (id) => {
@@ -98,7 +109,6 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
 
   const handleNewThread = async ({ newMessage }) => {
     console.log('new thread');
-    console.log('new thread Message', newMessage);
 
     const res = await fetch('/api/openai/createThread', {
       method: 'POST',
@@ -123,7 +133,7 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
   const handleAddMessage = async (threadId, newMessage) => {
     console.log('add message');
 
-    const addMessage = await fetch('/api/openai/addThreadMessage', {
+    await fetch('/api/openai/addThreadMessage', {
       method: 'POST',
       body: JSON.stringify({
         message: newMessage,
@@ -137,8 +147,6 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
         threadId: threadId,
       }),
     });
-
-    console.log('addMessage', await addMessage.json());
 
     handleRunAssistant(threadId);
   };
