@@ -20,6 +20,7 @@ export default function BetaIcon({
   return (
     <>
       <Flex
+        zIndex={0}
         maxW={'fit-content'}
         minW={'fit-content'}
         pt={'0.2rem'}

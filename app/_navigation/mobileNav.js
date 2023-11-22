@@ -76,6 +76,7 @@ export default function MobileNav() {
         finalFocusRef={btnRef}>
         <DrawerOverlay />
         <DrawerContent
+          minH={'100vh'}
           background={'var(--darkPurpleGrayAlt)'}
           backdropFilter={'blur(10px) saturate(100%)'}>
           <DrawerBody

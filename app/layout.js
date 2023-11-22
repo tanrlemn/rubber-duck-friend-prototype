@@ -17,11 +17,59 @@ import { LayoutProvider } from './lib/providers/LayoutProvider';
 
 // local components
 import Navbar from './_navigation/navbar';
+import { ThreadProvider } from './lib/providers/ThreadProvider';
+
+const APP_NAME = 'Rubber Duck';
+const APP_DEFAULT_TITLE = 'Rubber Duck Friend – Beta';
+const APP_TITLE_TEMPLATE = '%s - Rubber Duck Friend';
+const APP_DESCRIPTION = 'A rubber duck to help you debug your life.';
 
 // metadata
 export const metadata = {
-  title: 'Rubber Duck Friend Prototype',
-  description: 'A prototype for a rubber duck friend.',
+  metadataBase: new URL('https://rubberduckfriend.netlify.app'),
+  alternates: {
+    canonical: '/',
+    languages: {
+      'en-US': '/en-US',
+    },
+  },
+  applicationName: APP_NAME,
+  title: {
+    default: APP_DEFAULT_TITLE,
+    template: APP_TITLE_TEMPLATE,
+  },
+  description: APP_DESCRIPTION,
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: APP_DEFAULT_TITLE,
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: 'website',
+    siteName: APP_NAME,
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+    images: '/images/og-image.png',
+  },
+  twitter: {
+    card: 'summary',
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
+};
+
+export const viewport = {
+  themeColor: '#432e4cca',
 };
 
 export default async function RootLayout({ children }) {
@@ -50,8 +98,10 @@ export default async function RootLayout({ children }) {
             <ThemeProvider>
               <SessionProvider session={session}>
                 <LayoutProvider>
-                  <Navbar />
-                  {children}
+                  <ThreadProvider>
+                    {children}
+                    <Navbar />
+                  </ThreadProvider>
                 </LayoutProvider>
               </SessionProvider>
             </ThemeProvider>

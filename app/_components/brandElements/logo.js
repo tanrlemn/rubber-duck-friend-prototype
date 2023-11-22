@@ -61,12 +61,12 @@ export const LogoContent = ({ color, animate }) => {
         lineHeight={'1.56288rem'}
         letterSpacing={'-0.02688rem'}
         textTransform={'lowercase'}
-        fontSize={'1.5625rem'}>
+        size={'md'}>
         <Highlight
           styles={{
             color: 'var(--teal)',
             fontWeight: 700,
-            fontSize: '0.8rem',
+            fontSize: '0.7rem',
             verticalAlign: 'super',
           }}
           query={'Beta'}>

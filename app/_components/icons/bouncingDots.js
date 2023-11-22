@@ -1,8 +1,9 @@
 'use client';
 
-export default function BouncingDots() {
+export default function BouncingDots({ color = 'var(--midOrange)' }) {
   return (
     <svg
+      fill={color}
       width='24'
       height='24'
       viewBox='0 0 24 24'

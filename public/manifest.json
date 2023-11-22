@@ -1,0 +1,39 @@
+{
+  "id": "any_id",
+  "name": "Rubber Duck Friend – Beta",
+  "short_name": "Rubber Duck Friend",
+  "description": "A rubber duck to help you debug your life.",
+  "icons": [
+    {
+      "src": "./icons/logo72x72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/logo384x384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#432e4cca",
+  "background_color": "#221428",
+  "start_url": "/",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait"
+}
