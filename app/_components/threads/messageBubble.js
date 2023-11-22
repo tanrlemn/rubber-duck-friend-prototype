@@ -4,105 +4,87 @@
 import { LoadingContext } from '@/app/lib/providers/LoadingProvider';
 
 // hooks
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useRemark } from 'react-remark';
 
 // chakra-ui
-import {
-  Modal,
-  Icon,
-  Image,
-  Box,
-  Heading,
-  ListItem,
-  Text,
-  Flex,
-} from '@chakra-ui/react';
+import { Box, Code, ListItem, Text } from '@chakra-ui/react';
+
+// local components
+import BouncingBall from '../icons/bouncingBall';
 
 export default function MessageBubble({
   role,
   message,
   isLatestMessage = false,
+  loadingBubble = false,
 }) {
-  const { setLoading } = useContext(LoadingContext);
+  const { setLoading, loadingInPlace } = useContext(LoadingContext);
+  const [reactContent, setMarkdownSource] = useRemark({
+    rehypeReactOptions: {
+      components: {
+        p: (props) => (
+          <Text
+            p={'1rem 0'}
+            {...props}></Text>
+        ),
+        code: (props) => (
+          <Code
+            position={'relative'}
+            boxSizing='border-box'
+            p={'0.1rem 0.5rem'}
+            mb={'-0.5rem'}
+            bottom={0}
+            overflowX={'auto'}
+            maxW={'100%'}
+            colorScheme={'blackAlpha'}
+            color={'var(--midOrange)'}
+            variant={'solid'}
+            {...props}></Code>
+        ),
+      },
+    },
+  });
+  const [messageDate, setMessageDate] = useState(null);
 
   useEffect(() => {
     if (isLatestMessage) {
       document
-        .getElementById(message.id)
-        .scrollIntoView({ behavior: 'smooth', block: 'end' });
+        .getElementById(loadingBubble ? 'loadingBubble' : message.id)
+        .scrollIntoView({ behavior: 'smooth', block: 'start' });
       setLoading(false);
     }
-  }, [message, isLatestMessage, setLoading]);
+
+    if (message) {
+      const date = new Date(message.created_at);
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const ampm = hours >= 12 ? 'pm' : 'am';
+
+      setMessageDate(`${hours}:${minutes} ${ampm}`);
+      setMarkdownSource(message.content[0].text.value);
+    }
+  }, [message, isLatestMessage, setLoading, setMarkdownSource, loadingBubble]);
 
   return (
     <ListItem
       maxW={'100%'}
-      id={message.id}
+      id={!loadingBubble ? message.id : 'loadingBubble'}
       display={'flex'}
       flexDirection={'column'}
       alignItems={role === 'user' ? 'flex-end' : 'flex-start'}
       m={'1.5rem 0'}>
-      <Text
+      <Box
         maxW={{ base: '100%', md: '30rem' }}
-        p={'1rem'}
+        p={'0.5rem 1rem'}
         borderRadius={
           role === 'user' ? '1rem 1rem 0.1rem 1rem' : '1rem 1rem 1rem 0.1rem'
         }
         background={
           role === 'user' ? 'var(--blue)' : 'var(--darkPurpleGrayAlt)'
         }>
-        {message.content[0].text.value}
-      </Text>
-      {/* <span>{message.timestamp.toLocaleString()}</span> */}
+        {!loadingBubble ? <>{reactContent}</> : <BouncingBall />}
+      </Box>
     </ListItem>
-  );
-}
-
-export function Media({ hasFailed, url }) {
-  return (
-    <div
-      onClick={() => {
-        Modal.info({
-          centered: true,
-          icon: null,
-          okText: 'Close',
-          width: '60%',
-          content: (
-            <div className={styles.picture_container}>
-              <Image
-                alt='Media'
-                style={{ width: '100%', height: '100%' }}
-                src={url}
-              />
-            </div>
-          ),
-        });
-      }}>
-      {!url && !hasFailed && <Box></Box>}
-
-      {hasFailed && (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <Icon
-            type={'warning'}
-            style={{ fontSize: '5em' }}
-          />
-          <p>Failed to load media</p>
-        </div>
-      )}
-
-      {!hasFailed && url && (
-        <div className={styles.media_icon}>
-          <div style={{ zIndex: 123, position: 'absolute' }}>
-            <Icon
-              type={'eye'}
-              style={{ fontSize: '5em', opacity: 0.3 }}
-            />
-          </div>
-          <div
-            className={styles.picture_preview}
-            style={{ backgroundImage: `url(${url})`, zIndex: 122 }}></div>
-        </div>
-      )}
-    </div>
   );
 }

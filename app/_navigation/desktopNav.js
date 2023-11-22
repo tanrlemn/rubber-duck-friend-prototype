@@ -97,7 +97,6 @@ export default function DesktopNav() {
                 top={0}
                 onClick={() => {
                   router.push('/threads/new');
-                  onClose();
                 }}>
                 <IconButton
                   icon={<EditIcon />}

@@ -1,8 +1,7 @@
-// chakra-ui
-import { Box, Container, Heading, Text, Link } from '@chakra-ui/react';
+'use client';
 
-// local components
-import MainButton from './_components/buttons/mainButton';
+// chakra-ui
+import { Box, Container, Heading, Text, Link, Button } from '@chakra-ui/react';
 
 export default function NotFound() {
   return (
@@ -13,7 +12,7 @@ export default function NotFound() {
         <Text>Sorry, we couldn&apos;t find that page...</Text>
       </Box>
       <Link href='/'>
-        <MainButton text={'Return Home'} />
+        <Button>Return home</Button>
       </Link>
     </Container>
   );

@@ -10,11 +10,12 @@ import { useState, useEffect, useContext } from 'react';
 import { Heading, Link, List, ListItem, Text } from '@chakra-ui/react';
 
 // local components
-import LoadingDiv from '../utils/loadingDiv';
+import LoadingIcon from '../icons/loadingIcon';
 
 export default function ThreadList({ isDesktop = false }) {
-  const { loadingInPlace, setLoadingInPlace, setLoading } =
-    useContext(LoadingContext);
+  const { setLoading } = useContext(LoadingContext);
+
+  const [loadingThreads, setLoadingThreads] = useState(true);
 
   const [threads, setThreads] = useState(null);
   const [updatedThreads, setUpdatedThreads] = useState(null);
@@ -22,7 +23,7 @@ export default function ThreadList({ isDesktop = false }) {
   useEffect(() => {
     const getThreads = async () => {
       setLoading(false);
-      setLoadingInPlace(true);
+      setLoadingThreads(true);
 
       const res = await fetch('/api/supabase/getThreads', {
         method: 'GET',
@@ -76,7 +77,7 @@ export default function ThreadList({ isDesktop = false }) {
 
       if (threadsStorage !== null && threadsStorage.revalidate === false) {
         setUpdatedThreads(threadsStorage.groups);
-        setLoadingInPlace(false);
+        setLoadingThreads(false);
         return;
       }
 
@@ -160,7 +161,7 @@ export default function ThreadList({ isDesktop = false }) {
         })
       );
 
-      setLoadingInPlace(false);
+      setLoadingThreads(false);
     };
 
     threads === null && getThreads();
@@ -170,8 +171,8 @@ export default function ThreadList({ isDesktop = false }) {
     }
   }, [
     threads,
-    setLoadingInPlace,
-    loadingInPlace,
+    setLoadingThreads,
+    loadingThreads,
     updatedThreads,
     setLoading,
     isDesktop,
@@ -179,7 +180,7 @@ export default function ThreadList({ isDesktop = false }) {
 
   return (
     <List pb={{ base: '2rem', md: 0 }}>
-      {loadingInPlace && <LoadingDiv />}
+      {loadingThreads && <LoadingIcon />}
       {threads !== null &&
         updatedThreads !== null &&
         updatedThreads.map((group) => {
