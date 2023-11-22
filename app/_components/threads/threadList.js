@@ -19,6 +19,7 @@ export default function ThreadList({ isDesktop = false }) {
 
   const [threads, setThreads] = useState(null);
   const [updatedThreads, setUpdatedThreads] = useState(null);
+  const [undefinedCount, setUndefinedCount] = useState(0);
 
   useEffect(() => {
     const getThreads = async () => {
@@ -48,6 +49,15 @@ export default function ThreadList({ isDesktop = false }) {
         const { last_id, data } = body;
 
         const lastMessage = data.find((message) => message.id === last_id);
+
+        if (lastMessage === undefined) {
+          setUndefinedCount(undefinedCount + 1);
+          if (undefinedCount > 5) {
+            localStorage.removeItem('threads');
+            setUndefinedCount(0);
+            updateThreads();
+          }
+        }
 
         return lastMessage;
       } catch (error) {
@@ -176,6 +186,7 @@ export default function ThreadList({ isDesktop = false }) {
     updatedThreads,
     setLoading,
     isDesktop,
+    undefinedCount,
   ]);
 
   return (

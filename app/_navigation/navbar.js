@@ -48,38 +48,37 @@ export default function Navbar() {
     <>
       {!loading && (
         <>
-          <Box
-            position={'fixed'}
-            w={'100%'}
-            top={0}>
-            <ReactPullToRefresh onRefresh={handleRefresh}>
-              <VStack
-                p={'1rem 1rem 0 1rem'}
-                background={'var(--darkerPurpleGrayAlt90)'}
-                color={'var(--purpleGray)'}
-                position={'fixed'}
-                zIndex={1000}
-                top={0}
-                transform={'translateY(-79%)'}
-                minH={'70vh'}
-                minW={'100%'}
-                justify={'flex-end'}
-                align={'center'}>
-                <VStack
-                  pb={'1rem'}
-                  minW={'100%'}
-                  justify={'flex-start'}
-                  align={'center'}>
-                  <BouncingDots />
-                  <Heading size={'sm'}>Pull down to refresh</Heading>
-                </VStack>
-                <BsThreeDots />
-              </VStack>
-            </ReactPullToRefresh>
-          </Box>
-
           {isMobile ? (
             <>
+              <Box
+                position={'fixed'}
+                w={'100%'}
+                top={0}>
+                <ReactPullToRefresh onRefresh={handleRefresh}>
+                  <VStack
+                    p={'1rem 1rem 0 1rem'}
+                    background={'var(--darkerPurpleGrayAlt90)'}
+                    color={'var(--purpleGray)'}
+                    position={'fixed'}
+                    zIndex={1000}
+                    top={0}
+                    transform={'translateY(-79%)'}
+                    minH={'70vh'}
+                    minW={'100%'}
+                    justify={'flex-end'}
+                    align={'center'}>
+                    <VStack
+                      pb={'1rem'}
+                      minW={'100%'}
+                      justify={'flex-start'}
+                      align={'center'}>
+                      <BouncingDots />
+                      <Heading size={'sm'}>Pull down to refresh</Heading>
+                    </VStack>
+                    <BsThreeDots />
+                  </VStack>
+                </ReactPullToRefresh>
+              </Box>
               {!isRunningStandalone && (
                 <PWAPrompt
                   copyTitle='Install Rubber Duck Friend'

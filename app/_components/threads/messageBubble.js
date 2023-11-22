@@ -69,28 +69,34 @@ export default function MessageBubble({
 
       setMessageDate(`${hours}:${minutes} ${ampm}`);
       setMarkdownSource(message.content[0].text.value);
+      console.log(
+        'message.content[0].text.value',
+        message.content[0].text.value
+      );
     }
   }, [message, isLatestMessage, setLoading, setMarkdownSource, loadingBubble]);
 
   return (
-    <ListItem
-      maxW={'100%'}
-      id={!loadingBubble ? message.id : 'loadingBubble'}
-      display={'flex'}
-      flexDirection={'column'}
-      alignItems={role === 'user' ? 'flex-end' : 'flex-start'}
-      m={'1.5rem 0'}>
-      <Box
-        maxW={{ base: '100%', md: '30rem' }}
-        p={'0.5rem 1rem'}
-        borderRadius={
-          role === 'user' ? '1rem 1rem 0.1rem 1rem' : '1rem 1rem 1rem 0.1rem'
-        }
-        background={
-          role === 'user' ? 'var(--blue)' : 'var(--darkPurpleGrayAlt)'
-        }>
-        {!loadingBubble ? <>{reactContent}</> : <BouncingBall />}
-      </Box>
-    </ListItem>
+    <>
+      <ListItem
+        maxW={'100%'}
+        id={!loadingBubble ? message.id : 'loadingBubble'}
+        display={'flex'}
+        flexDirection={'column'}
+        alignItems={role === 'user' ? 'flex-end' : 'flex-start'}
+        m={'1.5rem 0'}>
+        <Box
+          maxW={{ base: '100%', md: '30rem' }}
+          p={'0.5rem 1rem'}
+          borderRadius={
+            role === 'user' ? '1rem 1rem 0.1rem 1rem' : '1rem 1rem 1rem 0.1rem'
+          }
+          background={
+            role === 'user' ? 'var(--blue)' : 'var(--darkPurpleGrayAlt)'
+          }>
+          {!loadingBubble ? <>{reactContent}</> : <BouncingBall />}
+        </Box>
+      </ListItem>
+    </>
   );
 }

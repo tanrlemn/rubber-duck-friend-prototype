@@ -13,7 +13,7 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
   const { setLoading, setLoadingInPlace, loadingInPlace } =
     useContext(LoadingContext);
   const { session } = useContext(SessionContext);
-  const { setThreadMessages } = useContext(ThreadContext);
+  const { threadMessages, setThreadMessages } = useContext(ThreadContext);
 
   const router = useRouter();
 
@@ -21,7 +21,6 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
   const [runId, setRunId] = useState(null);
   const [runStatus, setRunStatus] = useState(null);
   const [refreshStatus, setRefreshStatus] = useState(false);
-  const [messages, setMessages] = useState(null);
 
   const getMessages = useCallback(async () => {
     try {
@@ -57,7 +56,7 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
       setRunStatus(status);
     };
 
-    if (messages === null && currentThreadId !== null) {
+    if (threadMessages === null && currentThreadId !== null) {
       getMessages();
     }
 
@@ -82,7 +81,11 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
           router.push(`/threads/${currentThreadId}`);
         }
         if (loadingInPlace) {
-          setLoadingInPlace(false);
+          const timeoutId = setTimeout(() => {
+            setLoadingInPlace(false);
+          }, 1500);
+
+          return () => clearTimeout(timeoutId);
         }
       }
     }
@@ -90,7 +93,6 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
     runStatus,
     refreshStatus,
     runId,
-    messages,
     setLoading,
     session,
     currentThreadId,
@@ -99,6 +101,7 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
     setLoadingInPlace,
     loadingInPlace,
     getMessages,
+    threadMessages,
   ]);
 
   const handleNewThreadId = (id) => {
@@ -173,7 +176,6 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
   };
 
   return {
-    messages,
     runStatus,
     handleNewThread,
     handleAddMessage,

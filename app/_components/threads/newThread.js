@@ -1,5 +1,11 @@
 'use client';
 
+// context
+import { LoadingContext } from '@/app/lib/providers/LoadingProvider';
+
+// hooks
+import { useContext } from 'react';
+
 // chakra-ui
 import { Box, Flex } from '@chakra-ui/react';
 
@@ -8,6 +14,7 @@ import MessageInput from './messageInput';
 import BetaIcon from '../icons/betaIcon';
 
 export default function NewThread() {
+  const { loadingInPlace } = useContext(LoadingContext);
   return (
     <Box
       position={'relative'}
@@ -19,15 +26,19 @@ export default function NewThread() {
         w={'100%'}
         align={'center'}
         justify={'center'}>
-        <BetaIcon
-          color={'var(--blue)'}
-          animated={false}
-        />
-        <BetaIcon />
-        <BetaIcon
-          color={'var(--yellow)'}
-          animated={false}
-        />
+        {!loadingInPlace && (
+          <>
+            <BetaIcon
+              color={'var(--blue)'}
+              animated={false}
+            />
+            <BetaIcon />
+            <BetaIcon
+              color={'var(--yellow)'}
+              animated={false}
+            />
+          </>
+        )}
       </Flex>
       <MessageInput isNewThread={true} />
     </Box>

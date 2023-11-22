@@ -24,7 +24,7 @@ import {
 import { ArrowUpIcon } from '@chakra-ui/icons';
 
 // local components
-import Underscore from '../brandElements/underscore';
+import RingResize from '../icons/ringResize';
 
 export default function MessageInput({ threadId = null, isNewThread = false }) {
   const { setLoading, loadingInPlace, setLoadingInPlace } =
@@ -185,15 +185,7 @@ export default function MessageInput({ threadId = null, isNewThread = false }) {
                     disabled ? 'var(--purpleGray)' : 'var(--darkestPurple)'
                   }
                   onClick={handleSend}
-                  icon={
-                    loadingInPlace ? (
-                      <Box className={'animateText'}>
-                        <Underscore color={'var(--purpleGray)'} />
-                      </Box>
-                    ) : (
-                      <ArrowUpIcon />
-                    )
-                  }
+                  icon={loadingInPlace ? <RingResize /> : <ArrowUpIcon />}
                   ml={'0.5rem'}
                 />
               </InputRightAddon>
