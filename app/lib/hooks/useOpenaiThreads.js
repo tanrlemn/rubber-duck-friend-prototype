@@ -81,11 +81,7 @@ export function useOpenaiThreads(threadId = null, isNewThread = false) {
           router.push(`/threads/${currentThreadId}`);
         }
         if (loadingInPlace) {
-          const timeoutId = setTimeout(() => {
-            setLoadingInPlace(false);
-          }, 1500);
-
-          return () => clearTimeout(timeoutId);
+          setLoadingInPlace(false);
         }
       }
     }
