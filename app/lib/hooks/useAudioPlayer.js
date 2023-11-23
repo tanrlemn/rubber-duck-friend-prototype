@@ -1,20 +1,27 @@
 'use client';
 
+// context
+import { AudioConsentContext } from '../providers/AudioConsentProvider';
+
 // hooks
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 
 export const useAudioPlayer = () => {
+  const { audioConsent } = useContext(AudioConsentContext);
+
   const [audio] = useState(() => new Audio('/speech.mp3'));
   const [isPlaying, setIsPlaying] = useState(false);
 
   const playAudio = (newAudioToken) => {
-    if (!isPlaying) {
+    if (!isPlaying && audioConsent) {
       const bubblePopAudio = new Audio('/bubblePop.mp3');
       audio.src = `/speech.mp3?token=${newAudioToken}`;
 
       audio.load();
       bubblePopAudio.load();
-      bubblePopAudio.play();
+      bubblePopAudio.play().catch((error) => {
+        console.error('Audio playback failed:', error);
+      });
       bubblePopAudio.onended = () => {
         audio
           .play()
