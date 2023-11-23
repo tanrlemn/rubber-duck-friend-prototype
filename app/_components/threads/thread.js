@@ -6,7 +6,6 @@ import { ThreadContext } from '@/app/lib/providers/ThreadProvider';
 
 // hooks
 import { useContext, useEffect } from 'react';
-import { useOpenaiThreads } from '@/app/lib/hooks/useOpenaiThreads';
 
 // chakra-ui
 import { List } from '@chakra-ui/react';
@@ -19,9 +18,7 @@ export default function Thread({ threadId }) {
   const { loading, loadingInPlace } = useContext(LoadingContext);
   const { threadMessages } = useContext(ThreadContext);
 
-  useEffect(() => {
-    console.log('new message received, reloading thread');
-  }, [threadMessages]);
+  useEffect(() => {}, [threadMessages]);
 
   return (
     <>

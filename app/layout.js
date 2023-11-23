@@ -1,5 +1,7 @@
 import './globals.css';
 
+import dynamic from 'next/dynamic';
+
 // font
 import { Inter } from 'next/font/google';
 const inter = Inter({ subsets: ['latin'] });
@@ -16,8 +18,11 @@ import { SessionProvider } from './lib/providers/SessionProvider';
 import { LayoutProvider } from './lib/providers/LayoutProvider';
 
 // local components
-import Navbar from './_navigation/navbar';
 import { ThreadProvider } from './lib/providers/ThreadProvider';
+import { AudioConsentProvider } from './lib/providers/AudioConsentProvider';
+const Navbar = dynamic(() => import('./_navigation/navbar'), {
+  ssr: false,
+});
 
 const APP_NAME = 'Rubber Duck';
 const APP_DEFAULT_TITLE = 'Rubber Duck Friend – Beta';
@@ -99,8 +104,10 @@ export default async function RootLayout({ children }) {
               <SessionProvider session={session}>
                 <LayoutProvider>
                   <ThreadProvider>
-                    {children}
-                    <Navbar />
+                    <AudioConsentProvider>
+                      {children}
+                      <Navbar />
+                    </AudioConsentProvider>
                   </ThreadProvider>
                 </LayoutProvider>
               </SessionProvider>

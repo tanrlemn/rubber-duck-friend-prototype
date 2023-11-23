@@ -9,6 +9,7 @@ import { useState, useContext, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAutosizeTextarea } from '@/app/lib/hooks/useAutosizeTextarea';
 import { useOpenaiThreads } from '@/app/lib/hooks/useOpenaiThreads';
+import { useAudioPlayer } from '@/app/lib/hooks/useAudioPlayer';
 
 // chakra-ui
 import {
@@ -30,6 +31,8 @@ export default function MessageInput({ threadId = null, isNewThread = false }) {
   const { setLoading, loadingInPlace, setLoadingInPlace } =
     useContext(LoadingContext);
   const { setThreadMessages } = useContext(ThreadContext);
+
+  const { endAudio } = useAudioPlayer();
 
   const inputRef = useRef(null);
   const textareaRef = useRef(null);
@@ -65,12 +68,14 @@ export default function MessageInput({ threadId = null, isNewThread = false }) {
   }, [newMessage, runStatus, setLoading, threadId, isNewThread, router]);
 
   const handleSend = async () => {
+    console.log('handleSend');
+    endAudio();
+
     if (disabled || loadingInPlace || newMessage === '') {
       return;
     }
 
     setLoadingInPlace(true);
-    // setIsFocused(false);
 
     if (!isNewThread) {
       setThreadMessages((prev) => [
@@ -84,7 +89,7 @@ export default function MessageInput({ threadId = null, isNewThread = false }) {
 
       handleAddMessage(threadId, newMessage);
     } else {
-      threadId = await handleNewThread({ newMessage });
+      threadId = await handleNewThread(newMessage);
     }
 
     const threadsStorage = JSON.parse(localStorage.getItem('threads'));

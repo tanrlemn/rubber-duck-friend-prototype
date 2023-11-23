@@ -2,20 +2,19 @@
 
 // context
 import { LoadingContext } from '@/app/lib/providers/LoadingProvider';
+import { AudioConsentContext } from '../lib/providers/AudioConsentProvider';
 
 // hooks
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  useIsMobile,
-  useIsRunningStandalone,
-} from '@/app/lib/hooks/useIsMobile';
+import usePWA from 'react-pwa-install-prompt';
+import { useIsMobile } from '@/app/lib/hooks/useIsMobile';
 
 // chakra-ui
 import { Box, Flex, Heading, VStack } from '@chakra-ui/react';
 
 // components
-import PWAPrompt from 'react-ios-pwa-prompt';
+
 import ReactPullToRefresh from 'react-pull-to-refresh';
 import { BsThreeDots } from 'react-icons/bs';
 
@@ -27,21 +26,29 @@ import BouncingDots from '../_components/icons/bouncingDots';
 
 export default function Navbar() {
   const { loading, setLoading } = useContext(LoadingContext);
+  const { audioConsent, setAudioConsent, deniedConsent, setDeniedConsent } =
+    useContext(AudioConsentContext);
+
   const isMobile = useIsMobile();
-  const isRunningStandalone = useIsRunningStandalone();
   const router = useRouter();
-
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    if (document.readyState === 'complete') {
-      setIsLoaded(true);
-    }
-  }, []);
+  const { isStandalone, isInstallPromptSupported, promptInstall } = usePWA();
 
   const handleRefresh = () => {
     setLoading(true);
     router.refresh();
+  };
+
+  const onClickInstall = async () => {
+    const didInstall = await promptInstall();
+    if (didInstall) {
+      console.log('User accepted install prompt');
+    }
+  };
+
+  const renderInstallButton = () => {
+    if (isInstallPromptSupported && isStandalone)
+      return <button onClick={onClickInstall}>Prompt PWA Install</button>;
+    return null;
   };
 
   return (
@@ -79,16 +86,7 @@ export default function Navbar() {
                   </VStack>
                 </ReactPullToRefresh>
               </Box>
-              {!isRunningStandalone && (
-                <PWAPrompt
-                  copyTitle='Install Rubber Duck Friend'
-                  copyBody='Install the Rubber Duck Friend app on your iPhone for a better experience.'
-                  promptOnVisit={1}
-                  timesToShow={10}
-                  copyClosePrompt='Close'
-                  permanentlyHideOnDismiss={false}
-                />
-              )}
+              {renderInstallButton()}
               <Flex
                 zIndex={1000}
                 background={'var(--darkPurpleGrayAlt90)'}

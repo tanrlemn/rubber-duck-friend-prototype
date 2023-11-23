@@ -10,7 +10,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Heading, Link, List, ListItem, Text } from '@chakra-ui/react';
 
 // local components
-import LoadingIcon from '../icons/loadingIcon';
+import BouncingDots from '../icons/bouncingDots';
 
 export default function ThreadList({ isDesktop = false }) {
   const { setLoading } = useContext(LoadingContext);
@@ -191,7 +191,7 @@ export default function ThreadList({ isDesktop = false }) {
 
   return (
     <List pb={{ base: '2rem', md: 0 }}>
-      {loadingThreads && <LoadingIcon />}
+      {loadingThreads && <BouncingDots />}
       {threads !== null &&
         updatedThreads !== null &&
         updatedThreads.map((group) => {

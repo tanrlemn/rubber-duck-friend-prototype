@@ -1,10 +1,15 @@
 'use client';
 
+// context
+import { LoadingContext } from '../providers/LoadingProvider';
+
 // hooks
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { useWindowHeight } from './useWindowHeight';
 
 export function useAutosizeTextarea(textAreaRef, value) {
+  const { loadingInPlace } = useContext(LoadingContext);
+
   const windowHeight = useWindowHeight();
 
   useEffect(() => {
@@ -12,11 +17,13 @@ export function useAutosizeTextarea(textAreaRef, value) {
       textAreaRef.style.height = '0px';
       const scrollHeight = textAreaRef.scrollHeight;
 
-      if (scrollHeight + 20 > windowHeight) {
-        textAreaRef.style.height = windowHeight - 20 + 'px';
+      if (loadingInPlace) {
+        textAreaRef.style.maxHeight = '8rem';
+      } else if (scrollHeight > windowHeight * 0.8) {
+        textAreaRef.style.height = windowHeight * 0.8 + 'px';
       } else {
         textAreaRef.style.height = scrollHeight + 20 + 'px';
       }
     }
-  }, [textAreaRef, value, windowHeight]);
+  }, [textAreaRef, value, windowHeight, loadingInPlace]);
 }

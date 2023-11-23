@@ -8,8 +8,8 @@ export default function LogoIcon() {
       viewBox='0 0 334 337'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'>
-      <g clip-path='url(#clip0_1_71)'>
-        <g clip-path='url(#clip1_1_71)'>
+      <g clipPath='url(#clip0_1_71)'>
+        <g clipPath='url(#clip1_1_71)'>
           <path
             d='M232.64 336.061C237.392 336.061 241.244 332.208 241.244 327.457C241.244 322.705 237.392 318.853 232.64 318.853V336.061Z'
             fill='#00FFB6'

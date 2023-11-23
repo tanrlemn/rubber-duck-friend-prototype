@@ -52,7 +52,7 @@ export default function MessageBubble({
       setTimeout(() => {
         document
           .getElementById(loadingBubble ? 'loadingBubble' : message.id)
-          .scrollIntoView({
+          ?.scrollIntoView({
             block: 'start',
             inline: 'nearest',
             behavior: 'smooth',
@@ -69,10 +69,6 @@ export default function MessageBubble({
 
       setMessageDate(`${hours}:${minutes} ${ampm}`);
       setMarkdownSource(message.content[0].text.value);
-      console.log(
-        'message.content[0].text.value',
-        message.content[0].text.value
-      );
     }
   }, [message, isLatestMessage, setLoading, setMarkdownSource, loadingBubble]);
 
