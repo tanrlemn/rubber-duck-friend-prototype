@@ -3,6 +3,7 @@
 // context
 import { LoadingContext } from '@/app/lib/providers/LoadingProvider';
 import { AudioConsentContext } from '../lib/providers/AudioConsentProvider';
+import { SessionContext } from '../lib/providers/SessionProvider';
 
 // hooks
 import { useContext, useRef } from 'react';
@@ -40,6 +41,7 @@ import BouncingDots from '../_components/icons/bouncingDots';
 
 export default function Navbar() {
   const { loading, setLoading } = useContext(LoadingContext);
+  const { session } = useContext(SessionContext);
   const { enableAudio, denyAudio, isConsentDialogOpen, setConsentDialogOpen } =
     useContext(AudioConsentContext);
 
@@ -100,7 +102,7 @@ export default function Navbar() {
     <>
       {!loading && (
         <>
-          {isConsentDialogOpen && (
+          {isConsentDialogOpen && session && (
             <AlertDialog
               isOpen={isConsentDialogOpen}
               leastDestructiveRef={cancelRef}
@@ -158,7 +160,7 @@ export default function Navbar() {
                     position={'fixed'}
                     zIndex={1000}
                     top={0}
-                    transform={'translateY(-82%)'}
+                    transform={'translateY(-80%)'}
                     minH={'70vh'}
                     minW={'100%'}
                     justify={'flex-end'}
